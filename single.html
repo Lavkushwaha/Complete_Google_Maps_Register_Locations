@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<style>
+
+    #floating-panel {
+        position: absolute;
+        top: 10px;
+        left: 25%;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+    }
+
+
+</style>
+<body>
+
+<div id="map" style="width:100%;height:500px;"></div>
+
+<script>
+    var marker;
+    var infowindow;
+    var lat1;
+    var lng1;
+    function myMap() {
+        var mapCanvas = document.getElementById("map");
+        var myCenter=new google.maps.LatLng(23.17066382710224, 79.9859619140625);
+        var mapOptions = {
+            center: myCenter, zoom: 18,
+            mapTypeId:google.maps.MapTypeId.HYBRID
+        };
+        var map = new google.maps.Map(mapCanvas, mapOptions);
+        google.maps.event.addListener(map, 'click', function(event) {
+            placeMarker(map, event.latLng);
+            displayLocation(event.latLng);
+        });
+    }
+
+    function placeMarker(map, location) {
+        if (!marker || !marker.setPosition) {
+            marker = new google.maps.Marker({
+                position: location,
+                map: map,
+
+            });
+
+        }
+        else {
+            marker.setPosition(location);
+
+        }
+        if (!!infowindow && !!infowindow.close) {
+            infowindow.close();
+        }
+        infowindow = new google.maps.InfoWindow({
+            content: 'Latitude: ' + location.lat() + '<br>Longitude: ' + location.lng()
+
+        });
+
+        infowindow.open(map,marker);
+
+    }
+
+    function displayLocation(location)
+    {
+
+        var lang = location.lng();
+        var lat = location.lat();
+        document.getElementById('txtlat').value = lat;
+        document.getElementById('txtlang').value = lang;
+    }
+
+   // Read more: http://mrbool.com/how-to-track-users-registration-location-in-google-maps/33562#ixzz4jXCjBB4B
+
+
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkG1aDqrbOk28PmyKjejDwWZhwEeLVJbA&callback=myMap"></script>
+<!--
+To use this code on your website, get a free API key from Google.
+
+-->
+
+
+
+
+<form action="insertdb.php" method="POST">
+    <input type="hidden" name="txtlat" id="txtlat" required value="">
+    <input type="hidden" name="txtlang" id="txtlang" required value="">
+     Name: <input type="text" name="name" required placeholder="Please type your name here"><br>
+    Address: <input type="text" name="address" required placeholder="Please type your addresss here"><br>
+    <input type="submit" >
+</form>
+
+
+
+</body>
+
+
+</html>
+
+
